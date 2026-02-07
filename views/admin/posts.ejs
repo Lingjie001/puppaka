@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Posts | PUPPAKA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #fff; min-height: 100vh; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 260px; background: #12121a; border-right: 1px solid rgba(255,255,255,0.1); padding: 1.5rem; }
+    .sidebar-logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo span:first-child { font-size: 1.5rem; }
+    .sidebar-logo span:last-child { background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li { margin-bottom: 0.25rem; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #a0a0b0; text-decoration: none; border-radius: 8px; transition: all 0.2s; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(99, 102, 241, 0.1); color: #fff; }
+    .main-content { flex: 1; padding: 2rem; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .header h1 { font-size: 1.75rem; }
+    .btn { padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; display: inline-block; }
+    .btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; }
+    .data-table { width: 100%; background: rgba(26, 26, 37, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
+    .data-table table { width: 100%; border-collapse: collapse; }
+    .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .data-table th { background: rgba(255,255,255,0.05); font-weight: 600; color: #a0a0b0; }
+    .data-table tr:hover { background: rgba(255,255,255,0.02); }
+    .actions { display: flex; gap: 0.5rem; }
+    .actions a { color: #6366f1; text-decoration: none; font-size: 0.875rem; }
+    .actions a:hover { text-decoration: underline; }
+    .empty-state { text-align: center; padding: 4rem; color: #a0a0b0; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo"><span>🐾</span><span>PUPPAKA</span></div>
+      <nav><ul class="sidebar-nav">
+        <li><a href="/admin">📊 控制台</a></li>
+        <li><a href="/admin/posts" class="active">📝 文章管理</a></li>
+        <li><a href="/admin/projects">🎨 作品管理</a></li>
+        <li><a href="/admin/contacts">📧 联系记录</a></li>
+        <li><a href="/admin/settings">⚙️ 设置</a></li>
+        <li><a href="/">🏠 查看网站</a></li>
+        <li><a href="/admin/logout">🚪 退出登录</a></li>
+      </ul></nav>
+    </aside>
+    <main class="main-content">
+      <div class="header">
+        <h1>文章管理</h1>
+        <a href="/admin/posts/new" class="btn btn-primary">+ 新建文章</a>
+      </div>
+      
+      <% if (posts && posts.length > 0) { %>
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>标题</th>
+              <th>分类</th>
+              <th>状态</th>
+              <th>创建时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% posts.forEach(post => { %>
+            <tr>
+              <td><%= post.title %></td>
+              <td><%= post.category || 'General' %></td>
+              <td><%= post.published ? '已发布' : '草稿' %></td>
+              <td><%= new Date(post.created_at).toLocaleDateString('zh-CN') %></td>
+              <td class="actions">
+                <a href="/admin/posts/<%= post.id %>/edit">编辑</a>
+                <a href="/blog/<%= post.slug %>" target="_blank">查看</a>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+      <div class="empty-state">
+        <p>暂无文章</p>
+      </div>
+      <% } %>
+    </main>
+  </div>
+</body>
+</html>

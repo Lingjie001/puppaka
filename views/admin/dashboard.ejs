@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | PUPPAKA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #fff;
+      min-height: 100vh;
+    }
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 260px;
+      background: #12121a;
+      border-right: 1px solid rgba(255,255,255,0.1);
+      padding: 1.5rem;
+    }
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-logo span:first-child { font-size: 1.5rem; }
+    .sidebar-logo span:last-child {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sidebar-nav {
+      list-style: none;
+    }
+    .sidebar-nav li {
+      margin-bottom: 0.25rem;
+    }
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: #a0a0b0;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .sidebar-nav a:hover,
+    .sidebar-nav a.active {
+      background: rgba(99, 102, 241, 0.1);
+      color: #fff;
+    }
+    .sidebar-nav a.active {
+      border-left: 3px solid #6366f1;
+    }
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .header h1 { font-size: 1.75rem; }
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .user-menu a {
+      color: #a0a0b0;
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+    .user-menu a:hover { color: #fff; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: rgba(26, 26, 37, 0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .stat-card h3 {
+      font-size: 0.875rem;
+      color: #a0a0b0;
+      margin-bottom: 0.5rem;
+    }
+    .stat-card .number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .quick-actions {
+      background: rgba(26, 26, 37, 0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .quick-actions h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span>🐾</span>
+        <span>PUPPAKA</span>
+      </div>
+      <nav>
+        <ul class="sidebar-nav">
+          <li><a href="/admin" class="active">📊 控制台</a></li>
+          <li><a href="/admin/posts">📝 文章管理</a></li>
+          <li><a href="/admin/projects">🎨 作品管理</a></li>
+          <li><a href="/admin/contacts">📧 联系记录</a></li>
+          <li><a href="/admin/settings">⚙️ 设置</a></li>
+          <li><a href="/">🏠 查看网站</a></li>
+          <li><a href="/admin/logout">🚪 退出登录</a></li>
+        </ul>
+      </nav>
+    </aside>
+    
+    <main class="main-content">
+      <div class="header">
+        <h1>控制台</h1>
+        <div class="user-menu">
+          <span>👤 <%= user.username %></span>
+          <a href="/admin/logout">退出</a>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>文章数量</h3>
+          <div class="number"><%= stats.posts || 0 %></div>
+        </div>
+        <div class="stat-card">
+          <h3>作品数量</h3>
+          <div class="number"><%= stats.projects || 0 %></div>
+        </div>
+        <div class="stat-card">
+          <h3>联系记录</h3>
+          <div class="number"><%= stats.contacts || 0 %></div>
+        </div>
+      </div>
+      
+      <div class="quick-actions">
+        <h2>快捷操作</h2>
+        <div class="action-buttons">
+          <a href="/admin/posts/new" class="btn btn-primary">+ 新建文章</a>
+          <a href="/admin/projects/new" class="btn btn-primary">+ 新建作品</a>
+          <a href="/" target="_blank" class="btn btn-secondary">查看网站</a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

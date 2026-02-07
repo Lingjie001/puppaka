@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= post ? '编辑文章' : '新建文章' %> | PUPPAKA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #fff; min-height: 100vh; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 260px; background: #12121a; border-right: 1px solid rgba(255,255,255,0.1); padding: 1.5rem; }
+    .sidebar-logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo span:first-child { font-size: 1.5rem; }
+    .sidebar-logo span:last-child { background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li { margin-bottom: 0.25rem; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #a0a0b0; text-decoration: none; border-radius: 8px; transition: all 0.2s; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(99, 102, 241, 0.1); color: #fff; }
+    .main-content { flex: 1; padding: 2rem; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .header h1 { font-size: 1.75rem; }
+    .form-container { background: rgba(26, 26, 37, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem; max-width: 800px; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; color: #a0a0b0; font-size: 0.875rem; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem 1rem; background: #0a0a0f; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 1rem; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #6366f1; }
+    .form-group textarea { min-height: 300px; resize: vertical; }
+    .btn { padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; display: inline-block; border: none; cursor: pointer; }
+    .btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; margin-left: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo"><span>🐾</span><span>PUPPAKA</span></div>
+      <nav><ul class="sidebar-nav">
+        <li><a href="/admin">📊 控制台</a></li>
+        <li><a href="/admin/posts" class="active">📝 文章管理</a></li>
+        <li><a href="/admin/projects">🎨 作品管理</a></li>
+        <li><a href="/admin/contacts">📧 联系记录</a></li>
+        <li><a href="/admin/settings">⚙️ 设置</a></li>
+        <li><a href="/">🏠 查看网站</a></li>
+        <li><a href="/admin/logout">🚪 退出登录</a></li>
+      </ul></nav>
+    </aside>
+    <main class="main-content">
+      <div class="header">
+        <h1><%= post ? '编辑文章' : '新建文章' %></h1>
+        <a href="/admin/posts" class="btn btn-secondary">← 返回列表</a>
+      </div>
+      
+      <div class="form-container">
+        <form action="<%= post ? '/admin/posts/' + post.id : '/admin/posts' %>" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label>标题</label>
+            <input type="text" name="title" value="<%= post ? post.title : '' %>" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Slug (URL标识)</label>
+            <input type="text" name="slug" value="<%= post ? post.slug : '' %>" required placeholder="例如: hello-world">
+          </div>
+          
+          <div class="form-group">
+            <label>分类</label>
+            <input type="text" name="category" value="<%= post ? post.category : '' %>" placeholder="例如: Technology">
+          </div>
+          
+          <div class="form-group">
+            <label>标签 (用逗号分隔)</label>
+            <input type="text" name="tags" value="<%= post ? post.tags : '' %>" placeholder="例如: nodejs, web, tutorial">
+          </div>
+          
+          <div class="form-group">
+            <label>摘要</label>
+            <textarea name="excerpt" rows="3" placeholder="简短描述"><%= post ? post.excerpt : '' %></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>内容 (支持 Markdown)</label>
+            <textarea name="content" rows="15" required placeholder="# 标题
+
+正文内容..."><%= post ? post.content : '' %></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>状态</label>
+            <select name="published">
+              <option value="1" <%= post && post.published ? 'selected' : '' %>>已发布</option>
+              <option value="0" <%= post && !post.published ? 'selected' : '' %>>草稿</option>
+            </select>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">保存</button>
+          <a href="/admin/posts" class="btn btn-secondary">取消</a>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
