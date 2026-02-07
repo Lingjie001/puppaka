@@ -4,9 +4,9 @@ const Database = require('../database');
 const db = new Database();
 
 // 获取所有文章（公开API）
-router.get('/posts', (req, res) => {
+router.get('/posts', async (req, res) => {
   try {
-    const posts = db.getPosts(100);
+    const posts = await db.getPosts(100);
     res.json({ success: true, data: posts });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -14,9 +14,9 @@ router.get('/posts', (req, res) => {
 });
 
 // 获取单个文章
-router.get('/posts/:slug', (req, res) => {
+router.get('/posts/:slug', async (req, res) => {
   try {
-    const post = db.getPostBySlug(req.params.slug);
+    const post = await db.getPostBySlug(req.params.slug);
     if (!post) {
       return res.status(404).json({ success: false, error: 'Post not found' });
     }
@@ -27,9 +27,9 @@ router.get('/posts/:slug', (req, res) => {
 });
 
 // 获取所有项目
-router.get('/projects', (req, res) => {
+router.get('/projects', async (req, res) => {
   try {
-    const projects = db.getProjects(100);
+    const projects = await db.getProjects(100);
     res.json({ success: true, data: projects });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -37,9 +37,9 @@ router.get('/projects', (req, res) => {
 });
 
 // 获取单个项目
-router.get('/projects/:slug', (req, res) => {
+router.get('/projects/:slug', async (req, res) => {
   try {
-    const project = db.getProjectBySlug(req.params.slug);
+    const project = await db.getProjectBySlug(req.params.slug);
     if (!project) {
       return res.status(404).json({ success: false, error: 'Project not found' });
     }

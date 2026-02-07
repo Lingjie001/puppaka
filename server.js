@@ -5,13 +5,26 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
+const fs = require('fs');
 const Database = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 确保上传目录存在
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
 // 数据库初始化
-const db = new Database();
+try {
+  var db = new Database();
+  console.log('✅ Database connected');
+} catch (err) {
+  console.error('❌ Database connection failed:', err.message);
+  process.exit(1);
+}
 
 // 安全中间件
 app.use(helmet({
