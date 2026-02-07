@@ -1,0 +1,91 @@
+<section class="page-header">
+  <div class="page-container">
+    <div class="page-tag">Blog</div>
+    <h1>博客文章</h1>
+    <p>分享技术见解、学习心得与创作过程</p>
+  </div>
+</section>
+
+<section class="section section-posts">
+  <div class="section-container">
+    <% if (posts && posts.length > 0) { %>
+    <div class="posts-grid">
+      <% posts.forEach((post, index) => { %>
+      <article class="post-card" data-delay="<%= index % 6 %>">
+        <% if (post.featured_image) { %>
+        <a href="/blog/<%= post.slug %>" class="post-image">
+          <img src="<%= post.featured_image %>" alt="<%= post.title %>" loading="lazy">
+          <div class="post-overlay">
+            <span>Read More</span>
+          </div>
+        </a>
+        <% } %>
+        
+        <div class="post-content">
+          <div class="post-meta">
+            <span class="post-category"><%= post.category || 'General' %></span>
+            <span class="post-date"><%= new Date(post.created_at).toLocaleDateString('zh-CN') %></span>
+          </div>
+          
+          <h3 class="post-title">
+            <a href="/blog/<%= post.slug %>"><%= post.title %></a>
+          </h3>
+          
+          <p class="post-excerpt"><%= post.excerpt || post.content.substring(0, 120) + '...' %></p>
+          
+          <a href="/blog/<%= post.slug %>" class="post-link">
+            <span>阅读全文</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </article>
+      <% }); %>
+    </div>
+    
+    <!-- Pagination -->
+    <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+    <div class="pagination">
+      <% if (page > 1) { %>
+      <a href="/blog?page=<%= page - 1 %>" class="pagination-prev">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        <span>上一页</span>
+      </a>
+      <% } %>
+      
+      <div class="pagination-numbers">
+        <% for (let i = 1; i <= totalPages; i++) { %>
+        <% if (i === page) { %>
+        <span class="pagination-current"><%= i %></span>
+        <% } else { %>
+        <a href="/blog?page=<%= i %>"><%= i %></a>
+        <% } %>
+        <% } %>
+      </div>
+      
+      <% if (page < totalPages) { %>
+      <a href="/blog?page=<%= page + 1 %>" class="pagination-next">
+        <span>下一页</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <% } %>
+    </div>
+    <% } %>
+    
+    <% } else { %>
+    <div class="empty-state">
+      <div class="empty-icon">📝</div>
+      <h3>暂无文章</h3>
+      <p>博客内容即将上线，敬请期待...</p>
+      <% if (typeof user !== 'undefined' && user) { %>
+      <a href="/admin/posts/new" class="btn btn-primary">创建第一篇文章</a>
+      <% } %>
+    </div>
+    <% } %>
+  </div>
+</section>

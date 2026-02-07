@@ -1,0 +1,81 @@
+<section class="page-header">
+  <div class="page-container">
+    <div class="page-tag">Contact</div>
+    <h1>联系我</h1>
+    <p>分享你的想法、建议或合作机会</p>
+  </div>
+</section>
+
+<section class="section section-contact">
+  <div class="section-container">
+    <div class="contact-content">
+      <div class="contact-info">
+        <h2>联系方式</h2>
+        
+        <p>如果你有任何问题、建议或合作想法，欢迎通过以下方式联系我。</p>
+        
+        <div class="contact-methods">
+          <div class="contact-method">
+            <div class="method-icon">📧</div>
+            <div class="method-content">
+              <h4>电子邮件</h4>
+              <a href="mailto:guanghui0711@gmail.com">guanghui0711@gmail.com</a>
+            </div>
+          </div>
+          
+          <div class="contact-method">
+            <div class="method-icon">🐙</div>
+            <div class="method-content">
+              <h4>GitHub</h4>
+              <a href="https://github.com/Lingjie001" target="_blank" rel="noopener">github.com/Lingjie001</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="contact-note">
+          <h4>响应时间</h4>
+          <p>我会在 24-48 小时内回复你的消息。如果是紧急事项，请通过电子邮件联系。</p>
+        </div>
+      </div>
+      
+      <div class="contact-form">
+        <h2>发送消息</h2>
+        
+        <% if (typeof message !== 'undefined' && message) { %>
+        <div class="message-alert message-<%= message.type %>">
+          <%= message.text %>
+        </div>
+        <% } %>
+        
+        <form action="/contact" method="POST">
+          <div class="form-group">
+            <label for="name">姓名 *</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">电子邮件 *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="subject">主题</label>
+            <input type="text" id="subject" name="subject">
+          </div>
+          
+          <div class="form-group">
+            <label for="message">消息内容 *</label>
+            <textarea id="message" name="message" rows="6" required></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-large">
+            <span>发送消息</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

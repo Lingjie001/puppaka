@@ -1,0 +1,98 @@
+<% 
+const path = '/blog';
+const title = post.title;
+const description = post.excerpt || post.content.substring(0, 150);
+%>
+<%- include('../layout', { path, title, description }) %>
+
+<article class="article-page">
+  <div class="article-container">
+    <!-- Article Header -->
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="article-category"><%= post.category || 'General' %></span>
+        <span class="article-date"><%= new Date(post.created_at).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+      </div>
+      
+      <h1 class="article-title"><%= post.title %></h1>
+      
+      <% if (post.excerpt) { %>
+      <p class="article-excerpt"><%= post.excerpt %></p>
+      <% } %>
+      
+      <% if (post.tags) { %>
+      <div class="article-tags">
+        <% post.tags.split(',').forEach(tag => { %>
+        <span class="article-tag">#<%= tag.trim() %></span>
+        <% }); %>
+      </div>
+      <% } %>
+    </header>
+    
+    <!-- Featured Image -->
+    <% if (post.featured_image) { %>
+    <div class="article-hero-image">
+      <img src="<%= post.featured_image %>" alt="<%= post.title %>">
+    </div>
+    <% } %>
+    
+    <!-- Article Content -->
+    <div class="article-content">
+      <%- post.content %>
+    </div>
+    
+    <!-- Article Footer -->
+    <footer class="article-footer">
+      <div class="article-share">
+        <span>分享文章：</span>
+        <a href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(post.title) %>&url=<%= encodeURIComponent('https://puppaka.com/blog/' + post.slug) %>" target="_blank" rel="noopener" class="share-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('https://puppaka.com/blog/' + post.slug) %>" target="_blank" rel="noopener" class="share-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </a>
+      </div>
+      
+      <% if (user) { %>
+      <div class="article-admin">
+        <a href="/admin/posts/<%= post.id %>/edit" class="btn btn-secondary">编辑文章</a>
+      </div>
+      <% } %>
+    </footer>
+  </div>
+</article>
+
+<!-- Related Posts -->
+<% if (related && related.length > 0) { %>
+<section class="section section-related">
+  <div class="section-container">
+    <h2 class="related-title">相关文章</h2>
+    
+    <div class="posts-grid">
+      <% related.forEach((item, index) => { %>
+      <article class="post-card" data-delay="<%= index %>">
+        <% if (item.featured_image) { %>
+        <a href="/blog/<%= item.slug %>" class="post-image">
+          <img src="<%= item.featured_image %>" alt="<%= item.title %>" loading="lazy">
+        </a>
+        <% } %>
+        
+        <div class="post-content">
+          <div class="post-meta">
+            <span class="post-category"><%= item.category || 'General' %></span>
+          </div>
+          
+          <h3 class="post-title">
+            <a href="/blog/<%= item.slug %>"><%= item.title %></a>
+          </h3>
+        </div>
+      </article>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
