@@ -5,11 +5,15 @@ const bcrypt = require('bcryptjs');
 
 class DB {
   constructor() {
-    const dbPath = path.join(__dirname, 'data', 'puppaka.db');
+    // Hostinger 免费版可能没有文件写入权限，使用内存数据库
+    const isHostinger = process.env.HOSTINGER || process.env.NODE_ENV === 'production';
+    const dbPath = isHostinger ? ':memory:' : path.join(__dirname, 'data', 'puppaka.db');
     
-    // 确保数据目录存在
-    if (!fs.existsSync(path.dirname(dbPath))) {
-      fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+    if (!isHostinger) {
+      // 确保数据目录存在
+      if (!fs.existsSync(path.dirname(dbPath))) {
+        fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+      }
     }
     
     this.db = new sqlite3.Database(dbPath);
@@ -90,6 +94,65 @@ class DB {
     });
 
     console.log('✅ Database initialized');
+    
+    // 如果是内存数据库，插入示例数据
+    if (isHostinger) {
+      this.seedData();
+    }
+  }
+  
+  // 插入示例数据
+  seedData() {
+    // 示例文章
+    const posts = [
+      {
+        title: '开始使用 PUPPAKA',
+        slug: 'getting-started',
+        content: '欢迎！这是 PUPPAKA 网站的第一篇文章。',
+        excerpt: '欢迎来到 PUPPAKA，这是一个现代化的个人网站平台。',
+        category: '教程',
+        tags: '开始,教程',
+        published: 1
+      },
+      {
+        title: '深色科技风格设计',
+        slug: 'dark-tech-design',
+        content: 'PUPPAKA 采用了深色科技风格设计...',
+        excerpt: '探索深色科技风格的美学原则。',
+        category: '设计',
+        tags: '设计,深色,科技',
+        published: 1
+      }
+    ];
+    
+    posts.forEach(post => {
+      this.db.run(`
+        INSERT OR IGNORE INTO posts (title, slug, content, excerpt, category, tags, published)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `, [post.title, post.slug, post.content, post.excerpt, post.category, post.tags, post.published]);
+    });
+    
+    // 示例项目
+    const projects = [
+      {
+        title: 'PUPPAKA 网站',
+        slug: 'puppaka-website',
+        description: '基于 Node.js 的动态网站项目',
+        content: '使用 Express + EJS + SQLite 构建',
+        category: 'Web开发',
+        technologies: 'Node.js,Express,EJS',
+        published: 1
+      }
+    ];
+    
+    projects.forEach(project => {
+      this.db.run(`
+        INSERT OR IGNORE INTO projects (title, slug, description, content, category, technologies, published)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `, [project.title, project.slug, project.description, project.content, project.category, project.technologies, project.published]);
+    });
+    
+    console.log('✅ Sample data seeded');
   }
 
   // 文章相关操作
