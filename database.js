@@ -13,8 +13,17 @@ class DB {
     }
     
     // Hostinger 免费版可能没有文件写入权限，使用内存数据库
-    this.isHostinger = process.env.HOSTINGER || process.env.NODE_ENV === 'production';
-    const dbPath = this.isHostinger ? ':memory:' : path.join(__dirname, 'data', 'puppaka.db');
+    // 检查是否在 Hostinger 或任何生产环境
+    this.isHostinger = process.env.HOSTINGER === 'true' || process.env.NODE_ENV === 'production';
+    
+    // 如果是 Hostinger 环境，使用内存数据库
+    let dbPath;
+    if (this.isHostinger) {
+      console.log('🏠 Hostinger environment detected, using in-memory database');
+      dbPath = ':memory:';
+    } else {
+      dbPath = path.join(__dirname, 'data', 'puppaka.db');
+    }
     
     if (!this.isHostinger) {
       // 确保数据目录存在
