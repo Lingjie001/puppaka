@@ -477,20 +477,22 @@ try {
   // 插入博客文章
   samplePosts.forEach(post => {
     try {
-      db.createPost(post);
+      db.savePost(post);
       console.log(`✅ 创建文章: ${post.title}`);
     } catch (e) {
       // 如果已存在，跳过
+      console.log(`⚠️ 文章已存在或创建失败: ${post.title}`);
     }
   });
   
   // 插入项目
   sampleProjects.forEach(project => {
     try {
-      db.createProject(project);
+      db.saveProject(project);
       console.log(`✅ 创建项目: ${project.title}`);
     } catch (e) {
       // 如果已存在，跳过
+      console.log(`⚠️ 项目已存在或创建失败: ${project.title}`);
     }
   });
   

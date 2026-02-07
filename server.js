@@ -83,53 +83,9 @@ app.locals.siteDescription = 'Personal Blog & Portfolio';
 // 首页
 app.get('/', async (req, res) => {
   try {
-    // 使用示例数据
-    const posts = [
-      {
-        id: 1,
-        title: '欢迎来到 PUPPAKA',
-        slug: 'welcome-to-puppaka',
-        excerpt: '欢迎来到你的个人博客和作品集网站，这里记录你的学习和创作旅程。',
-        content: '这是示例内容...',
-        category: 'General',
-        tags: 'welcome,setup,guide',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 2,
-        title: 'Node.js 网站开发入门',
-        slug: 'nodejs-website-development',
-        excerpt: '学习如何使用 Node.js 构建现代网站，从基础概念到实际部署。',
-        content: '这是示例内容...',
-        category: 'Technology',
-        tags: 'nodejs,web-development,tutorial',
-        created_at: new Date().toISOString()
-      }
-    ];
-    
-    const projects = [
-      {
-        id: 1,
-        title: 'PUPPAKA 网站',
-        slug: 'puppaka-website',
-        description: '一个现代化的个人博客和作品集网站，采用深色科技风格设计。',
-        category: 'Web Development',
-        technologies: 'Node.js,Express,SQLite,EJS,CSS,JavaScript',
-        link: 'https://puppaka.com',
-        github: 'https://github.com/Lingjie001/puppaka',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 2,
-        title: '图片画廊组件',
-        slug: 'image-gallery-component',
-        description: '一个现代化的响应式图片画廊组件，支持灯箱效果和懒加载。',
-        category: 'Frontend',
-        technologies: 'JavaScript,CSS,HTML,Responsive Design',
-        github: 'https://github.com/Lingjie001/image-gallery',
-        created_at: new Date().toISOString()
-      }
-    ];
+    // 从数据库获取数据
+    const posts = await db.getPosts(6);
+    const projects = await db.getProjects(6);
     
     res.render('index', { 
       posts, 
@@ -156,53 +112,31 @@ app.get('/blog', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
+    const offset = (page - 1) * limit;
     
-    // 使用示例数据
-    const posts = [
-      {
-        id: 1,
-        title: '欢迎来到 PUPPAKA',
-        slug: 'welcome-to-puppaka',
-        excerpt: '欢迎来到你的个人博客和作品集网站，这里记录你的学习和创作旅程。',
-        content: '这是示例内容...',
-        category: 'General',
-        tags: 'welcome,setup,guide',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 2,
-        title: 'Node.js 网站开发入门',
-        slug: 'nodejs-website-development',
-        excerpt: '学习如何使用 Node.js 构建现代网站，从基础概念到实际部署。',
-        content: '这是示例内容...',
-        category: 'Technology',
-        tags: 'nodejs,web-development,tutorial',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 3,
-        title: '深色主题设计指南',
-        slug: 'dark-theme-design-guide',
-        excerpt: '学习如何设计美观且实用的深色主题，提升用户体验和可访问性。',
-        content: '这是示例内容...',
-        category: 'Design',
-        tags: 'design,dark-theme,ui-ux,css',
-        created_at: new Date().toISOString()
-      }
-    ];
-    
-    const total = posts.length;
+    // 从数据库获取数据
+    const posts = await db.getPosts(limit, offset);
+    const total = await db.getPostCount();
     const totalPages = Math.ceil(total / limit);
     
     res.render('blog', { 
-      posts: posts.slice((page - 1) * limit, page * limit), 
+      posts, 
       page, 
       totalPages,
-      user: req.session.user 
+      user: req.session.user || null,
+      path: '/blog',
+      title: '博客',
+      description: '浏览所有博客文章'
     });
   } catch (error) {
     console.error(error);
-    res.status(500).render('error', { message: 'Server Error' });
+    res.status(500).render('error', { 
+      message: 'Server Error',
+      user: req.session.user || null,
+      path: '',
+      title: '错误',
+      description: '页面出现错误'
+    });
   }
 });
 
@@ -211,61 +145,57 @@ app.get('/blog/:slug', async (req, res) => {
   try {
     const post = await db.getPostBySlug(req.params.slug);
     if (!post) {
-      return res.status(404).render('error', { message: 'Post not found' });
+      return res.status(404).render('error', { 
+        message: 'Post not found',
+        user: req.session.user || null,
+        path: '',
+        title: '404',
+        description: '文章不存在'
+      });
     }
     const related = await db.getRelatedPosts(post.id, 3);
-    res.render('post', { post, related, user: req.session.user });
+    res.render('post', { 
+      post, 
+      related, 
+      user: req.session.user || null,
+      path: '/blog',
+      title: post.title,
+      description: post.excerpt || post.title
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).render('error', { message: 'Server Error' });
+    res.status(500).render('error', { 
+      message: 'Server Error',
+      user: req.session.user || null,
+      path: '',
+      title: '错误',
+      description: '页面出现错误'
+    });
   }
 });
 
 // 作品集
 app.get('/portfolio', async (req, res) => {
   try {
-    // 使用示例数据
-    const projects = [
-      {
-        id: 1,
-        title: 'PUPPAKA 网站',
-        slug: 'puppaka-website',
-        description: '一个现代化的个人博客和作品集网站，采用深色科技风格设计。',
-        content: '这是示例内容...',
-        category: 'Web Development',
-        technologies: 'Node.js,Express,SQLite,EJS,CSS,JavaScript',
-        link: 'https://puppaka.com',
-        github: 'https://github.com/Lingjie001/puppaka',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 2,
-        title: '图片画廊组件',
-        slug: 'image-gallery-component',
-        description: '一个现代化的响应式图片画廊组件，支持灯箱效果和懒加载。',
-        content: '这是示例内容...',
-        category: 'Frontend',
-        technologies: 'JavaScript,CSS,HTML,Responsive Design',
-        github: 'https://github.com/Lingjie001/image-gallery',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 3,
-        title: 'API 管理系统',
-        slug: 'api-management-system',
-        description: '一个完整的 API 管理和监控系统，支持速率限制和数据分析。',
-        content: '这是示例内容...',
-        category: 'Backend',
-        technologies: 'Node.js,Express,MongoDB,Redis',
-        github: 'https://github.com/Lingjie001/api-manager',
-        created_at: new Date().toISOString()
-      }
-    ];
+    // 从数据库获取数据
+    const projects = await db.getProjects(100);
     
-    res.render('portfolio', { projects, user: req.session.user });
+    res.render('portfolio', { 
+      projects, 
+      user: req.session.user || null,
+      path: '/portfolio',
+      title: '作品集',
+      description: '浏览我的项目和作品'
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).render('error', { message: 'Server Error' });
+    res.status(500).render('error', { 
+      message: 'Server Error',
+      user: req.session.user || null,
+      path: '',
+      title: '错误',
+      description: '页面出现错误'
+    });
   }
 });
 
@@ -274,23 +204,52 @@ app.get('/portfolio/:slug', async (req, res) => {
   try {
     const project = await db.getProjectBySlug(req.params.slug);
     if (!project) {
-      return res.status(404).render('error', { message: 'Project not found' });
+      return res.status(404).render('error', { 
+        message: 'Project not found',
+        user: req.session.user || null,
+        path: '',
+        title: '404',
+        description: '项目不存在'
+      });
     }
-    res.render('project', { project, user: req.session.user });
+    res.render('project', { 
+      project, 
+      user: req.session.user || null,
+      path: '/portfolio',
+      title: project.title,
+      description: project.description
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).render('error', { message: 'Server Error' });
+    res.status(500).render('error', { 
+      message: 'Server Error',
+      user: req.session.user || null,
+      path: '',
+      title: '错误',
+      description: '页面出现错误'
+    });
   }
 });
 
 // 关于页面
 app.get('/about', (req, res) => {
-  res.render('about', { user: req.session.user });
+  res.render('about', { 
+    user: req.session.user || null,
+    path: '/about',
+    title: '关于',
+    description: '了解更多关于我和我的工作'
+  });
 });
 
 // 联系页面
 app.get('/contact', (req, res) => {
-  res.render('contact', { user: req.session.user, message: null });
+  res.render('contact', { 
+    user: req.session.user || null, 
+    message: null,
+    path: '/contact',
+    title: '联系',
+    description: '通过表单联系我'
+  });
 });
 
 // 联系表单提交
@@ -299,14 +258,20 @@ app.post('/contact', async (req, res) => {
     const { name, email, subject, message } = req.body;
     await db.saveContact({ name, email, subject, message });
     res.render('contact', { 
-      user: req.session.user, 
-      message: { type: 'success', text: 'Message sent successfully!' }
+      user: req.session.user || null, 
+      message: { type: 'success', text: 'Message sent successfully!' },
+      path: '/contact',
+      title: '联系',
+      description: '通过表单联系我'
     });
   } catch (error) {
     console.error(error);
     res.render('contact', { 
-      user: req.session.user, 
-      message: { type: 'error', text: 'Failed to send message. Please try again.' }
+      user: req.session.user || null, 
+      message: { type: 'error', text: 'Failed to send message. Please try again.' },
+      path: '/contact',
+      title: '联系',
+      description: '通过表单联系我'
     });
   }
 });
@@ -321,13 +286,25 @@ app.use('/api', apiRouter);
 
 // 404处理
 app.use((req, res) => {
-  res.status(404).render('error', { message: 'Page not found' });
+  res.status(404).render('error', { 
+    message: 'Page not found',
+    user: req.session ? req.session.user : null,
+    path: '',
+    title: '404',
+    description: '页面不存在'
+  });
 });
 
 // 错误处理
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).render('error', { message: 'Something went wrong!' });
+  res.status(500).render('error', { 
+    message: 'Something went wrong!',
+    user: req.session ? req.session.user : null,
+    path: '',
+    title: '错误',
+    description: '服务器内部错误'
+  });
 });
 
 // 启动服务器
