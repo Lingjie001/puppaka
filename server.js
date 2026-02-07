@@ -11,19 +11,33 @@ const Database = require('./database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 确保上传目录存在
+// 确保上传目录存在（使用 try-catch 避免 Hostinger 权限问题）
 const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+try {
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+} catch (err) {
+  console.warn('⚠️ Cannot create uploads directory:', err.message);
+  // Hostinger 免费版可能无法写入，继续启动
 }
 
-// 数据库初始化
-try {
-  var db = new Database();
-  console.log('✅ Database connected');
-} catch (err) {
-  console.error('❌ Database connection failed:', err.message);
-  process.exit(1);
+// 数据库初始化（异步）
+let db;
+let dbReady = false;
+
+async function initDatabase() {
+  try {
+    db = new Database();
+    await db.ready(); // 等待初始化完成
+    dbReady = true;
+    console.log('✅ Database initialized and ready');
+    return true;
+  } catch (err) {
+    console.error('❌ Database initialization failed:', err.message);
+    console.error(err.stack);
+    return false;
+  }
 }
 
 // 安全中间件
@@ -295,6 +309,30 @@ app.use((req, res) => {
   });
 });
 
+// 数据库就绪检查中间件
+app.use(async (req, res, next) => {
+  if (!dbReady) {
+    // 等待数据库初始化
+    const maxWait = 10000; // 最多等待10秒
+    const startTime = Date.now();
+    
+    while (!dbReady && (Date.now() - startTime) < maxWait) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    
+    if (!dbReady) {
+      return res.status(503).render('error', {
+        message: '服务正在启动，请稍后刷新',
+        user: null,
+        path: '',
+        title: '启动中',
+        description: '服务器正在初始化'
+      });
+    }
+  }
+  next();
+});
+
 // 错误处理
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -307,10 +345,24 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 启动服务器
-app.listen(PORT, () => {
-  console.log(`🚀 PUPPAKA server running on port ${PORT}`);
-  console.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+// 异步启动服务器
+async function startServer() {
+  // 先初始化数据库
+  const dbSuccess = await initDatabase();
+  
+  if (!dbSuccess) {
+    console.error('❌ Cannot start server without database');
+    // 即使数据库失败也启动服务器，但会显示错误页面
+  }
+  
+  app.listen(PORT, () => {
+    console.log(`🚀 PUPPAKA server running on port ${PORT}`);
+    console.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`💾 Database: ${db && db.isHostinger ? 'In-Memory (Hostinger)' : 'File-based'}`);
+  });
+}
+
+// 启动
+startServer();
 
 module.exports = app;
