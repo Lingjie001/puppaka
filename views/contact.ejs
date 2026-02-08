@@ -1,81 +1,64 @@
 <section class="page-header">
-  <div class="page-container">
-    <div class="page-tag">Contact</div>
-    <h1>联系我</h1>
-    <p>分享你的想法、建议或合作机会</p>
+  <div class="container">
+    <h1>Contact</h1>
+    <p>Have a question or want to work together?</p>
   </div>
 </section>
 
-<section class="section section-contact">
-  <div class="section-container">
-    <div class="contact-content">
-      <div class="contact-info">
-        <h2>联系方式</h2>
-        
-        <p>如果你有任何问题、建议或合作想法，欢迎通过以下方式联系我。</p>
-        
-        <div class="contact-methods">
-          <div class="contact-method">
-            <div class="method-icon">📧</div>
-            <div class="method-content">
-              <h4>电子邮件</h4>
-              <a href="mailto:guanghui0711@gmail.com">guanghui0711@gmail.com</a>
-            </div>
-          </div>
-          
-          <div class="contact-method">
-            <div class="method-icon">🐙</div>
-            <div class="method-content">
-              <h4>GitHub</h4>
-              <a href="https://github.com/Lingjie001" target="_blank" rel="noopener">github.com/Lingjie001</a>
-            </div>
-          </div>
-        </div>
-        
-        <div class="contact-note">
-          <h4>响应时间</h4>
-          <p>我会在 24-48 小时内回复你的消息。如果是紧急事项，请通过电子邮件联系。</p>
-        </div>
-      </div>
+<section class="section">
+  <div class="container" style="max-width: 720px;">
+    <div style="margin-bottom: 40px;">
+      <h2 style="margin-bottom: 16px;">Get in Touch</h2>
       
-      <div class="contact-form">
-        <h2>发送消息</h2>
-        
-        <% if (typeof message !== 'undefined' && message) { %>
-        <div class="message-alert message-<%= message.type %>">
-          <%= message.text %>
+      <p style="color: var(--text-secondary); margin-bottom: 24px;">
+        I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+      </p>
+      
+      <div style="background: var(--bg-secondary); padding: 24px; border-radius: 8px; border: 1px solid var(--border);">
+        <div style="margin-bottom: 16px;">
+          <strong style="display: block; margin-bottom: 4px;">Email</strong>
+          <a href="mailto:guanghui0711@gmail.com" style="color: var(--accent);">guanghui0711@gmail.com</a>
         </div>
-        <% } %>
         
-        <form action="/contact" method="POST">
-          <div class="form-group">
-            <label for="name">姓名 *</label>
-            <input type="text" id="name" name="name" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="email">电子邮件 *</label>
-            <input type="email" id="email" name="email" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="subject">主题</label>
-            <input type="text" id="subject" name="subject">
-          </div>
-          
-          <div class="form-group">
-            <label for="message">消息内容 *</label>
-            <textarea id="message" name="message" rows="6" required></textarea>
-          </div>
-          
-          <button type="submit" class="btn btn-primary btn-large">
-            <span>发送消息</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-            </svg>
-          </button>
-        </form>
+        <div>
+          <strong style="display: block; margin-bottom: 4px;">GitHub</strong>
+          <a href="https://github.com/Lingjie001" target="_blank" rel="noopener" style="color: var(--accent);">github.com/Lingjie001</a>
+        </div>
       </div>
+    </div>
+    
+    <div>
+      <h2 style="margin-bottom: 16px;">Send a Message</h2>
+      
+      <% if (typeof message !== 'undefined' && message) { %>
+      <div style="background: <%= message.type === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)' %>; padding: 16px; border-radius: 8px; margin-bottom: 24px; color: <%= message.type === 'success' ? '#10b981' : '#ef4444' %>;">
+        <%= message.text %>
+      </div>
+      <% } %>
+      
+      <form action="/contact" method="POST">
+        <div style="margin-bottom: 20px;">
+          <label for="name" style="display: block; margin-bottom: 8px; font-weight: 500;">Name *</label>
+          <input type="text" id="name" name="name" required style="width: 100%; padding: 12px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 1rem;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <label for="email" style="display: block; margin-bottom: 8px; font-weight: 500;">Email *</label>
+          <input type="email" id="email" name="email" required style="width: 100%; padding: 12px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 1rem;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <label for="subject" style="display: block; margin-bottom: 8px; font-weight: 500;">Subject</label>
+          <input type="text" id="subject" name="subject" style="width: 100%; padding: 12px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 1rem;">
+        </div>
+        
+        <div style="margin-bottom: 24px;">
+          <label for="message" style="display: block; margin-bottom: 8px; font-weight: 500;">Message *</label>
+          <textarea id="message" name="message" rows="6" required style="width: 100%; padding: 12px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 1rem; resize: vertical;"></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Send Message</button>
+      </form>
     </div>
   </div>
 </section>

@@ -1,244 +1,94 @@
 <!-- Hero Section -->
 <section class="hero">
-  <div class="hero-container">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        <span>Available for projects</span>
-      </div>
-      <h1 class="hero-title">
-        创造
-        <span class="gradient-text">数字体验</span>
-        <br>
-        分享技术思考
-      </h1>
-      
-      <p class="hero-description">
-        欢迎来到 PUPPAKA — 一个记录学习、分享创作的个人空间。
-        这里汇集了博客文章、项目作品和技术探索。
-      </p>
-      
-      <div class="hero-actions">
-        <a href="/portfolio" class="btn btn-primary">
-          <span>查看作品</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </a>
-        <a href="/blog" class="btn btn-secondary">
-          <span>阅读博客</span>
-        </a>
-      </div>
-    </div>
+  <div class="container">
+    <h1>Building the future,<br>one line at a time.</h1>
+    <p>Software engineer & creator. Passionate about technology, open source, and building useful things.</p>
     
-    <div class="hero-visual">
-      <div class="code-window">
-        <div class="code-header">
-          <div class="code-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <span class="code-title">hello-world.js</span>
-        </div>
-        <div class="code-content">
-          <pre><code>const life = {
-  passion: 'coding',
-  mission: 'create',
-  status: 'available'
-};
-
-console.log(
-  '🚀 Building the future'
-);
-</code></pre>
-        </div>
-      </div>
-      
-      <div class="floating-elements">
-        <div class="float-card card-1">
-          <span class="icon">⚡</span>
-          <span>Fast</span>
-        </div>
-        <div class="float-card card-2">
-          <span class="icon">🎨</span>
-          <span>Creative</span>
-        </div>
-        <div class="float-card card-3">
-          <span class="icon">🔒</span>
-          <span>Secure</span>
-        </div>
-      </div>
+    <div style="display: flex; gap: 12px; margin-top: 32px;">
+      <a href="/portfolio" class="btn btn-primary">View Projects</a>
+      <a href="/blog" class="btn btn-secondary">Read Blog</a>
     </div>
-  </div>
-  
-  <div class="scroll-indicator">
-    <span>Scroll</span>
-    <div class="scroll-arrow"></div>
   </div>
 </section>
 
-<!-- Featured Posts Section -->
-<section class="section section-posts">
-  <div class="section-container">
+<!-- Latest Posts -->
+<section class="section">
+  <div class="container">
     <div class="section-header">
-      <div class="section-tag">
-        <span>01</span>
-        <span>Latest Posts</span>
-      </div>
-      <h2>最新文章</h2>
-      <p>分享技术见解、学习心得与创作过程</p>
+      <h2>Latest Posts</h2>
     </div>
     
     <% if (posts && posts.length > 0) { %>
     <div class="posts-grid">
       <% posts.forEach((post, index) => { %>
-      <article class="post-card" data-delay="<%= index %>">
-        <% if (post.featured_image) { %>
-        <a href="/blog/<%= post.slug %>" class="post-image">
-          <img src="<%= post.featured_image %>" alt="<%= post.title %>" loading="lazy">
-          <div class="post-overlay">
-            <span>Read More</span>
-          </div>
-        </a>
-        <% } %>
-        
-        <div class="post-content">
-          <div class="post-meta">
-            <span class="post-category"><%= post.category || 'General' %></span>
-            <span class="post-date"><%= new Date(post.created_at).toLocaleDateString('zh-CN') %></span>
-          </div>
-          
-          <h3 class="post-title">
-            <a href="/blog/<%= post.slug %>"><%= post.title %></a>
-          </h3>
-          
-          <p class="post-excerpt"><%= post.excerpt || post.content.substring(0, 120) + '...' %></p>
-          
-          <a href="/blog/<%= post.slug %>" class="post-link">
-            <span>阅读全文</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
+      <article class="post-card">
+        <div class="post-meta">
+          <span class="post-category"><%= post.category || 'Post' %></span>
+          <span><%= new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
         </div>
+        
+        <h3 class="post-title">
+          <a href="/blog/<%= post.slug %>"><%= post.title %></a>
+        </h3>
+        
+        <p class="post-excerpt"><%= post.excerpt || post.content.substring(0, 150) + '...' %></p>
       </article>
       <% }); %>
     </div>
     
-    <div class="section-footer">
-      <a href="/blog" class="btn btn-outline">
-        <span>查看全部文章</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </a>
+    <div style="margin-top: 32px;">
+      <a href="/blog" class="btn btn-secondary">View All Posts →</a>
     </div>
-    
     <% } else { %>
     <div class="empty-state">
       <div class="empty-icon">📝</div>
-      <h3>暂无文章</h3>
-      <p>博客内容即将上线，敬请期待...</p>
+      <h3>No posts yet</h3>
+      <p>Coming soon...</p>
     </div>
     <% } %>
   </div>
 </section>
 
-<!-- Featured Projects Section -->
-<section class="section section-projects">
-  <div class="section-container">
+<!-- Featured Projects -->
+<section class="section" style="background: var(--bg-secondary);">
+  <div class="container">
     <div class="section-header">
-      <div class="section-tag">
-        <span>02</span>
-        <span>Featured Works</span>
-      </div>
-      <h2>精选作品</h2>
-      <p>探索创意项目与技术实验</p>
+      <h2>Featured Projects</h2>
     </div>
     
     <% if (projects && projects.length > 0) { %>
     <div class="projects-grid">
-      <% projects.forEach((project, index) => { %>
-      <article class="project-card <%= index === 0 ? 'project-card-large' : '' %>" data-delay="<%= index %>">
-        <a href="/portfolio/<%= project.slug %>" class="project-image">
-          <% if (project.featured_image) { %>
-          <img src="<%= project.featured_image %>" alt="<%= project.title %>" loading="lazy">
-          <% } else { %>
-          <div class="project-placeholder">
-            <span>🎨</span>
+      <% projects.forEach((project) => { %>
+      <article class="project-card">
+        <div class="project-meta">
+          <span class="project-category"><%= project.category || 'Project' %></span>
+          <% if (project.technologies) { %>
+          <div class="project-tech">
+            <% project.technologies.split(',').slice(0, 3).forEach(tech => { %>
+            <span class="tech-tag"><%= tech.trim() %></span>
+            <% }); %>
           </div>
           <% } %>
-          
-          <div class="project-overlay">
-            <div class="project-view">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-              <span>View Project</span>
-            </div>
-          </div>
-        </a>
-        
-        <div class="project-info">
-          <div class="project-meta">
-            <span class="project-category"><%= project.category || 'Project' %></span>
-            <% if (project.technologies) { %>
-            <div class="project-tech">
-              <% project.technologies.split(',').slice(0, 3).forEach(tech => { %>
-              <span class="tech-tag"><%= tech.trim() %></span>
-              <% }); %>
-            </div>
-            <% } %>
-          </div>
-          
-          <h3 class="project-title">
-            <a href="/portfolio/<%= project.slug %>"><%= project.title %></a>
-          </h3>
-          
-          <p class="project-desc"><%= project.description %></p>
         </div>
+        
+        <h3 class="project-title">
+          <a href="/portfolio/<%= project.slug %>"><%= project.title %></a>
+        </h3>
+        
+        <p class="project-desc"><%= project.description %></p>
       </article>
       <% }); %>
     </div>
     
-    <div class="section-footer">
-      <a href="/portfolio" class="btn btn-outline">
-        <span>查看全部作品</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </a>
+    <div style="margin-top: 32px;">
+      <a href="/portfolio" class="btn btn-secondary">View All Projects →</a>
     </div>
-    
     <% } else { %>
     <div class="empty-state">
       <div class="empty-icon">🎨</div>
-      <h3>暂无作品</h3>
-      <p>作品集即将上线，敬请期待...</p>
+      <h3>No projects yet</h3>
+      <p>Coming soon...</p>
     </div>
     <% } %>
-  </div>
-</section>
-
-<!-- CTA Section -->
-<section class="section section-cta">
-  <div class="section-container">
-    <div class="cta-card">
-      <div class="cta-content">
-        <h2>有项目想法？</h2>
-        <p>无论是技术合作、创意项目还是单纯想聊聊，都欢迎联系我。</p>
-      </div>
-      
-      <div class="cta-actions">
-        <a href="/contact" class="btn btn-primary btn-large">
-          <span>开始对话</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </a>
-      </div>
-    </div>
   </div>
 </section>

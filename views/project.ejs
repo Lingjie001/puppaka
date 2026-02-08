@@ -1,0 +1,41 @@
+<article class="article-page">
+  <div class="article-container">
+    <header class="article-header">
+      <div class="project-meta" style="margin-bottom: 16px;">
+        <span class="project-category"><%= project.category || 'Project' %></span>
+        <% if (project.technologies) { %>
+        <div class="project-tech">
+          <% project.technologies.split(',').forEach(tech => { %>
+          <span class="tech-tag"><%= tech.trim() %></span>
+          <% }); %>
+        </div>
+        <% } %>
+      </div>
+      
+      <h1 class="article-title"><%= project.title %></h1>
+      
+      <p class="project-desc" style="font-size: 1.1rem; margin-top: 16px;"><%= project.description %></p>
+      
+      <div style="margin-top: 24px; display: flex; gap: 16px;">
+        <% if (project.link) { %>
+        <a href="<%= project.link %>" target="_blank" rel="noopener" class="btn btn-primary">Visit Website</a>
+        <% } %>
+        <% if (project.github) { %>
+        <a href="<%= project.github %>" target="_blank" rel="noopener" class="btn btn-secondary">View on GitHub</a>
+        <% } %>
+      </div>
+    </header>
+    
+    <div class="article-content">
+      <%- project.content || '<p>No content available.</p>' %>
+    </div>
+    
+    <footer class="article-footer">
+      <% if (user) { %>
+      <div class="article-admin">
+        <a href="/admin/projects/<%= project.id %>/edit" class="btn btn-secondary">Edit Project</a>
+      </div>
+      <% } %>
+    </footer>
+  </div>
+</article>
