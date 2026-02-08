@@ -201,9 +201,23 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
-// 启动服务器 - 绑定到所有接口
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Server running on http://0.0.0.0:${PORT}`);
+// 启动服务器
+// Hostinger 容器会自动处理绑定，不需要指定 0.0.0.0
+const server = app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
+});
+
+// 错误处理
+server.on('error', (err) => {
+  console.error('❌ Server error:', err.message);
+  if (err.code === 'EACCES') {
+    console.error('Port requires elevated privileges');
+  }
+  if (err.code === 'EADDRINUSE') {
+    console.error('Port is already in use');
+  }
+  process.exit(1);
 });
 
 module.exports = app;
