@@ -90,6 +90,24 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// 数据库就绪检查中间件（必须在路由之前）
+app.use(async (req, res, next) => {
+  if (!dbReady) {
+    // 等待数据库初始化
+    const maxWait = 10000;
+    const startTime = Date.now();
+    
+    while (!dbReady && (Date.now() - startTime) < maxWait) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    
+    if (!dbReady) {
+      return res.status(503).send('服务正在启动，请稍后刷新...');
+    }
+  }
+  next();
+});
+
 // 全局变量
 app.locals.siteName = 'PUPPAKA';
 app.locals.siteDescription = 'Personal Blog & Portfolio';
@@ -309,30 +327,6 @@ app.use((req, res) => {
   });
 });
 
-// 数据库就绪检查中间件
-app.use(async (req, res, next) => {
-  if (!dbReady) {
-    // 等待数据库初始化
-    const maxWait = 10000; // 最多等待10秒
-    const startTime = Date.now();
-    
-    while (!dbReady && (Date.now() - startTime) < maxWait) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    
-    if (!dbReady) {
-      return res.status(503).render('error', {
-        message: '服务正在启动，请稍后刷新',
-        user: null,
-        path: '',
-        title: '启动中',
-        description: '服务器正在初始化'
-      });
-    }
-  }
-  next();
-});
-
 // 错误处理
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -355,7 +349,8 @@ async function startServer() {
     // 即使数据库失败也启动服务器，但会显示错误页面
   }
   
-  app.listen(PORT, () => {
+  // 绑定到所有接口 (0.0.0.0) - Hostinger 必需
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 PUPPAKA server running on port ${PORT}`);
     console.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`💾 Database: ${db && db.isHostinger ? 'In-Memory (Hostinger)' : 'File-based'}`);
