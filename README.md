@@ -155,3 +155,11 @@ MIT License - feel free to use for personal or commercial projects.
 Built with ❤️ by [Lingjie001](https://github.com/Lingjie001)
 
 Domain: [puppaka.com](https://puppaka.com)
+
+---
+
+## 🔄 Auto Deploy Test
+
+**Last Deploy Test**: 2026-02-08 03:30 UTC
+**Status**: ✅ Auto-deploy is working!
+**Next Check**: Every 3 minutes via cron
