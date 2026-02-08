@@ -1,8 +1,6 @@
-# Hostinger 共享主机 Node.js 配置
-# 将请求转发到 Node.js 应用
-
-RewriteEngine On
-RewriteRule ^$ http://127.0.0.1:3000/ [P,L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L]
+PassengerAppRoot /home/u734351237/domains/puppaka.com/public_html
+PassengerAppType node
+PassengerNodejs /opt/alt/alt-nodejs20/root/usr/bin/node
+PassengerStartupFile app.js
+PassengerBaseURI /
+PassengerFriendlyErrorPages on
