@@ -5,7 +5,7 @@
 /* CSS Variables */
 :root {
   /* Colors */
-  --bg-primary: #0a1f0a; /* 测试自动部署 - 深绿色背景 */
+  --bg-primary: #0a0a0f; /* 测试自动部署 - 黑色背景 */
   --bg-secondary: #12121a;
   --bg-tertiary: #1a1a25;
   --bg-card: rgba(26, 26, 37, 0.8);
